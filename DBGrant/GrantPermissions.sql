@@ -1,0 +1,5 @@
+USE Database
+GO
+
+GRANT SELECT/EXECUTE/ALTER ON Object TO Login;  
+GO  
