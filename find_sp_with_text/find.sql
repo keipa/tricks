@@ -1,12 +1,22 @@
-SELECT name
-FROM   sys.procedures
-WHERE  Object_definition(object_id) LIKE '%search text%'
+DECLARE @searchString VARCHAR(MAX)
+SET @searchString = 'SEARCHTERM'
+SELECT
+  name,
+  (LEN(Object_definition(object_id)) - LEN(REPLACE(Object_definition(object_id), @searchString, ''))) /
+  LEN(@searchString)                AS [Occ],
+  len(Object_definition(object_id)) AS [Len]
+FROM sys.procedures -- objects
+WHERE Object_definition(object_id) LIKE '%' + @searchString + '%'
+ORDER BY [Occ] DESC, [Len] DESC
 
---or
+
+--
 
 SELECT name
-FROM   sys.objects
-WHERE  Object_definition(object_id) LIKE '%search text%'
+FROM   sys.procedures -- objects
+WHERE  Object_definition(object_id) LIKE '%SEARCHTERM%' ORDER BY len(Object_definition(object_id)) DESC
+
+
 
 -- search by column names
 SELECT c.name AS ColName, t.name AS TableName
