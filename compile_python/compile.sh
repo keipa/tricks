@@ -1,1 +1,1 @@
-pyinstaller -f file.py
+pyinstaller -F file.py
