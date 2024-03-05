@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Playground
 {
     public static class CurlConverter
-    {
+    {    
         private static StringBuilder StringBuilder;
-
+    
         public static async Task<string> CopyAsCurlBash(this HttpResponseMessage req)
         {
             StringBuilder = new StringBuilder();
@@ -19,16 +19,24 @@ namespace Playground
             {
                 StringBuilder.AppendLine($"-H '{header.Key}:{header.Value.First()}'\\");
             }
-
+    
             // append body
-            string body = await req.RequestMessage.Content.ReadAsStringAsync();
-            StringBuilder.AppendLine($"-H 'Content-Type: {req.RequestMessage.Content.Headers.ContentType.MediaType}'");
-
+            string body = string.Empty;
+            if (req?.RequestMessage?.Content != null)
+            {
+                body = await req?.RequestMessage?.Content?.ReadAsStringAsync();
+            }
+    
+            if (req?.RequestMessage?.Content != null)
+            {
+                StringBuilder.AppendLine($"-H 'Content-Type: {req.RequestMessage?.Content.Headers.ContentType.MediaType}'");
+            }
+    
             StringBuilder.AppendLine($"--data '{body}'");
-
+    
             // set method
-            StringBuilder.AppendLine($"-X {req.RequestMessage.Method.Method}");
-
+            StringBuilder.AppendLine($"-X {req.RequestMessage?.Method.Method}");
+    
             StringBuilder.AppendLine("--compressed");
             return StringBuilder.ToString();
         }
